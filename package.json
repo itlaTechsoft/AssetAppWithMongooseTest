@@ -4,7 +4,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "cross-env NODE_ENV=production node app.js",
     "qa": "cross-env NODE_ENV=qa nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
