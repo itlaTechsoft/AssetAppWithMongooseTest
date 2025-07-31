@@ -14,6 +14,7 @@ import multer from "multer"; // Import multer for file uploads
 import { v4 as guidV4 } from "uuid";
 import session from "express-session"; // Import express-session for session management
 import connectDB from "./utils/MongooseConnection.js"; // Import the MongoDB connection utility
+import MongoStore from "connect-mongo"; // Import connect-mongo for session storage in MongoDB
 
 const app = express();
 
@@ -56,6 +57,16 @@ const imageStorageForLogoAssets = multer.diskStorage({
 app.use(multer({ storage: imageStorageForLogoAssets }).single("Logo")); // Use multer to handle file uploads, expecting a field named "Logo"
 
 // Set up session management
+app.use(session({
+  secret: process.env.SESSION_SECRET || "anything",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,  
+    ttl: 14 * 24 * 60 * 60 // opcional: 14 días de duración
+  }),
+}));
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "anything",
